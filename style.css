@@ -1,0 +1,835 @@
+/* ============================================================
+   CYBER_CHRONO // TECHNO DARK MODE STYLESHEET
+   With Google AdSense Support & Privacy Modal
+   ============================================================ */
+
+:root {
+  /* サイバーパレット - WORK (FOCUS) */
+  --work-color: #00f3ff;
+  --work-glow: rgba(0, 243, 255, 0.45);
+  --work-glow-soft: rgba(0, 243, 255, 0.15);
+
+  /* サイバーパレット - REST (BREAK) */
+  --break-color: #00ff66;
+  --break-glow: rgba(0, 255, 102, 0.45);
+  --break-glow-soft: rgba(0, 255, 102, 0.15);
+
+  /* 共通カラー */
+  --accent-pink: #ff0055;
+  --accent-amber: #ffaa00;
+  --bg-dark: #07090e;
+  --bg-panel: rgba(10, 14, 23, 0.88);
+  --border-dim: rgba(0, 243, 255, 0.2);
+  --text-muted: #5e7287;
+  --text-bright: #e0f8ff;
+
+  /* 現在のアクティブテーマ変数（デフォルトはWORK） */
+  --theme-color: var(--work-color);
+  --theme-glow: var(--work-glow);
+  --theme-glow-soft: var(--work-glow-soft);
+
+  --font-display: 'Orbitron', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+  --font-mono: 'Share Tech Mono', 'Courier New', Consolas, monospace;
+}
+
+/* 休憩モードへのテーマ切り替え */
+body.mode-break {
+  --theme-color: var(--break-color);
+  --theme-glow: var(--break-glow);
+  --theme-glow-soft: var(--break-glow-soft);
+  --border-dim: rgba(0, 255, 102, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-bright);
+  font-family: var(--font-mono);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  position: relative;
+  transition: background-color 0.5s ease;
+  padding: 20px 0;
+}
+
+/* ------------------------------------------------------------
+   背景エフェクト（グリッド、走査線、ヴィネット）
+   ------------------------------------------------------------ */
+.bg-grid {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(to right, rgba(0, 243, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 243, 255, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body.mode-break .bg-grid {
+  background-image: 
+    linear-gradient(to right, rgba(0, 255, 102, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 255, 102, 0.04) 1px, transparent 1px);
+}
+
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15) 0px,
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.8;
+}
+
+.vignette {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(3, 4, 7, 0.85) 95%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ------------------------------------------------------------
+   全体ラッパー
+   ------------------------------------------------------------ */
+.app-wrapper {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 12px;
+}
+
+/* ------------------------------------------------------------
+   メインHUDフレーム
+   ------------------------------------------------------------ */
+.hud-frame {
+  position: relative;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-dim);
+  backdrop-filter: blur(12px);
+  border-radius: 4px;
+  padding: 24px 28px;
+  box-shadow: 
+    0 0 35px rgba(0, 0, 0, 0.8),
+    inset 0 0 20px var(--theme-glow-soft);
+  clip-path: polygon(
+    0 16px, 16px 0,
+    calc(100% - 16px) 0, 100% 16px,
+    100% calc(100% - 16px), calc(100% - 16px) 100%,
+    16px 100%, 0 calc(100% - 16px)
+  );
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* ------------------------------------------------------------
+   ヘッダー
+   ------------------------------------------------------------ */
+.hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-dim);
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+
+.hud-id {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+}
+
+.hud-title-wrap {
+  text-align: center;
+}
+
+.hud-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--theme-color);
+  text-shadow: 0 0 10px var(--theme-glow);
+  position: relative;
+  display: inline-block;
+}
+
+.sub-title {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 3px;
+  margin-top: 2px;
+}
+
+.hud-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--theme-color);
+  letter-spacing: 1px;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  background-color: var(--theme-color);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--theme-color);
+  animation: pulse 1.8s infinite alternate;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1.15); }
+}
+
+/* ------------------------------------------------------------
+   ミッション入力バー
+   ------------------------------------------------------------ */
+.mission-bar {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid var(--theme-color);
+  padding: 6px 12px;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+}
+
+.mission-label {
+  color: var(--theme-color);
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+#missionInput {
+  background: transparent;
+  border: none;
+  color: var(--text-bright);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  width: 100%;
+  outline: none;
+  user-select: text;
+}
+
+#missionInput::placeholder {
+  color: #3b4b5c;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.icon-btn:hover {
+  color: var(--accent-pink);
+}
+
+/* ------------------------------------------------------------
+   モード切り替えタブ
+   ------------------------------------------------------------ */
+.mode-selector {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.mode-tab {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  padding: 10px 0;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.25s ease;
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+}
+
+.mode-tab:hover {
+  border-color: var(--theme-color);
+  color: var(--text-bright);
+}
+
+.mode-tab.active {
+  background: var(--theme-glow-soft);
+  border-color: var(--theme-color);
+  color: var(--theme-color);
+  text-shadow: 0 0 8px var(--theme-glow);
+  box-shadow: inset 0 0 12px var(--theme-glow-soft);
+}
+
+/* ------------------------------------------------------------
+   タイマーHUDディスプレイ
+   ------------------------------------------------------------ */
+.timer-display-wrap {
+  position: relative;
+  background: rgba(2, 4, 8, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 30px 10px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* コーナーアクセント */
+.hud-corner {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: var(--theme-color);
+  border-style: solid;
+  pointer-events: none;
+}
+.hud-corner.top-left { top: 6px; left: 6px; border-width: 2px 0 0 2px; }
+.hud-corner.top-right { top: 6px; right: 6px; border-width: 2px 2px 0 0; }
+.hud-corner.bottom-left { bottom: 6px; left: 6px; border-width: 0 0 2px 2px; }
+.hud-corner.bottom-right { bottom: 6px; right: 6px; border-width: 0 2px 2px 0; }
+
+.gauge-container {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.progress-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg); /* 12時の位置からスタート */
+}
+
+.ring-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.04);
+  stroke-width: 8;
+}
+
+.ring-ticks {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: 2;
+}
+
+.ring-progress {
+  fill: none;
+  stroke: url(#cyanGrad);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 880;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s ease, stroke 0.3s ease;
+}
+
+body.mode-break .ring-progress {
+  stroke: url(#greenGrad);
+}
+
+.timer-readout {
+  position: relative;
+  text-align: center;
+  z-index: 2;
+}
+
+.mode-caption {
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.digits {
+  font-family: var(--font-display);
+  font-size: 3.4rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--theme-color);
+  text-shadow: 0 0 20px var(--theme-glow);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.percent {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------
+   セッションHUDトラッカー
+   ------------------------------------------------------------ */
+.session-tracker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 10px 16px;
+  margin-bottom: 24px;
+}
+
+.session-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
+
+.session-count-val {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--theme-color);
+  text-shadow: 0 0 8px var(--theme-glow);
+}
+
+.session-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dot-slot {
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.6);
+  transform: rotate(45deg);
+  transition: all 0.3s ease;
+}
+
+.dot-slot.filled {
+  background: var(--theme-color);
+  border-color: var(--theme-color);
+  box-shadow: 0 0 10px var(--theme-color);
+}
+
+.reset-sessions-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.reset-sessions-btn:hover {
+  color: var(--accent-pink);
+}
+
+/* ------------------------------------------------------------
+   コントロールボタン群
+   ------------------------------------------------------------ */
+.control-panel {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.cyber-btn {
+  flex: 1;
+  position: relative;
+  background: rgba(5, 10, 18, 0.9);
+  border: 1px solid var(--border-dim);
+  color: var(--text-bright);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 14px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  outline: none;
+}
+
+.cyber-btn:hover {
+  border-color: var(--theme-color);
+  color: var(--theme-color);
+  box-shadow: 0 0 14px var(--theme-glow);
+  transform: translateY(-2px);
+}
+
+.cyber-btn:active {
+  transform: translateY(1px);
+}
+
+.cyber-btn.primary {
+  flex: 1.4;
+  background: var(--theme-glow-soft);
+  border-color: var(--theme-color);
+  color: var(--theme-color);
+  box-shadow: 0 0 12px var(--theme-glow-soft);
+}
+
+.cyber-btn.primary:hover {
+  background: var(--theme-color);
+  color: #030508;
+  box-shadow: 0 0 20px var(--theme-color);
+}
+
+.cyber-btn.running {
+  border-color: var(--accent-amber);
+  color: var(--accent-amber);
+  background: rgba(255, 170, 0, 0.15);
+  box-shadow: 0 0 14px rgba(255, 170, 0, 0.3);
+}
+
+.cyber-btn.running:hover {
+  background: var(--accent-amber);
+  color: #030508;
+  box-shadow: 0 0 20px var(--accent-amber);
+}
+
+/* ------------------------------------------------------------
+   フッター・トグル設定
+   ------------------------------------------------------------ */
+.hud-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 14px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer-left, .footer-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toggle-btn {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggle-btn.active {
+  border-color: var(--theme-color);
+  color: var(--theme-color);
+  background: var(--theme-glow-soft);
+}
+
+.toggle-btn:hover {
+  border-color: var(--theme-color);
+  color: var(--text-bright);
+}
+
+.policy-link-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.policy-link-btn:hover {
+  color: var(--theme-color);
+  text-decoration: underline;
+}
+
+.shortcut-tip {
+  color: #3f5166;
+  letter-spacing: 1px;
+}
+
+/* ------------------------------------------------------------
+   GOOGLE ADSENSE 広告コンテナ
+   ------------------------------------------------------------ */
+.ad-container {
+  background: rgba(10, 14, 23, 0.75);
+  border: 1px dashed var(--border-dim);
+  border-radius: 4px;
+  padding: 12px 16px;
+  transition: border-color 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.ad-container:hover {
+  border-color: var(--theme-color);
+}
+
+.ad-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding-bottom: 4px;
+}
+
+.ad-label {
+  color: var(--theme-color);
+  font-weight: bold;
+}
+
+.ad-slot-frame {
+  min-height: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+  position: relative;
+}
+
+.ad-placeholder {
+  text-align: center;
+  padding: 16px 8px;
+  color: var(--text-muted);
+}
+
+.ad-placeholder-icon {
+  font-size: 1.4rem;
+  color: var(--theme-color);
+  margin-bottom: 4px;
+  opacity: 0.6;
+}
+
+.ad-placeholder-text {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  color: #8da4be;
+  margin-bottom: 4px;
+}
+
+.ad-placeholder-sub {
+  font-size: 0.65rem;
+  color: #4a5c70;
+  letter-spacing: 1px;
+}
+
+/* ------------------------------------------------------------
+   プライバシーポリシー モーダル
+   ------------------------------------------------------------ */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(3, 5, 8, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  padding: 20px;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-container {
+  width: 100%;
+  max-width: 620px;
+  max-height: 85vh;
+  background: #090d15;
+  border: 1px solid var(--theme-color);
+  box-shadow: 0 0 30px var(--theme-glow-soft);
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  transform: translateY(20px) scale(0.96);
+  transition: transform 0.3s ease;
+  clip-path: polygon(
+    0 12px, 12px 0,
+    calc(100% - 12px) 0, 100% 12px,
+    100% calc(100% - 12px), calc(100% - 12px) 100%,
+    12px 100%, 0 calc(100% - 12px)
+  );
+}
+
+.modal-overlay.open .modal-container {
+  transform: translateY(0) scale(1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-dim);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 2px;
+  color: var(--theme-color);
+  font-weight: 800;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  color: var(--accent-pink);
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: #b0c4d8;
+  user-select: text;
+}
+
+/* スクロールバーのサイバースタイル */
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-body::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.4);
+}
+.modal-body::-webkit-scrollbar-thumb {
+  background: var(--theme-color);
+  border-radius: 3px;
+}
+
+.modal-body h3 {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  color: var(--theme-color);
+  margin: 16px 0 6px 0;
+  letter-spacing: 1px;
+}
+
+.modal-body h3:first-child {
+  margin-top: 0;
+}
+
+.modal-body p {
+  margin-bottom: 12px;
+}
+
+.modal-body a {
+  color: var(--theme-color);
+  text-decoration: underline;
+}
+
+.modal-footer {
+  padding: 14px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-footer .cyber-btn {
+  flex: none;
+  padding: 10px 24px;
+}
+
+/* ------------------------------------------------------------
+   レスポンシブ
+   ------------------------------------------------------------ */
+@media (max-width: 540px) {
+  .hud-frame {
+    padding: 18px 14px;
+  }
+  .hud-title {
+    font-size: 1.1rem;
+  }
+  .digits {
+    font-size: 2.7rem;
+  }
+  .gauge-container {
+    width: 240px;
+    height: 240px;
+  }
+  .hud-footer {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  .footer-center {
+    order: 2;
+  }
+  .footer-right {
+    order: 1;
+  }
+}

@@ -1,0 +1,3 @@
+# Google AdSense ads.txt template
+# 審査通過後、pub-XXXXXXXXXXXXXXXX をご自身のサイト運営者ID（パブリッシャーID）に書き換えてください。
+google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
