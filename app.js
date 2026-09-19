@@ -28,7 +28,7 @@
 
   let sessionCount = 0;
   let soundEnabled = true;
-  let autoSwitch = false;
+  let autoSwitch = true; // デフォルトで自動シーケンスON（25分作業後、自動で5分休憩開始）
 
   // --- DOM要素 ---
   const body = document.body;
@@ -59,6 +59,11 @@
   const autoSwitchStatusText = document.getElementById('autoSwitchStatusText');
   const quickTestBtn = document.getElementById('quickTestBtn');
   const testModeStatusText = document.getElementById('testModeStatusText');
+
+  // 広告要素
+  const adContainer = document.getElementById('adContainer');
+  const adHeaderLabel = document.getElementById('adHeaderLabel');
+  const adHeaderSub = document.getElementById('adHeaderSub');
 
   // プライバシーモーダル要素
   const privacyBtn = document.getElementById('privacyBtn');
@@ -204,8 +209,10 @@
       const savedAuto = localStorage.getItem('cyber_autoswitch');
       if (savedAuto !== null) {
         autoSwitch = savedAuto === 'true';
-        updateAutoSwitchBtnState();
+      } else {
+        autoSwitch = true; // 初回デフォルトON
       }
+      updateAutoSwitchBtnState();
     } catch (e) {
       console.warn('LocalStorage access warning:', e);
     }
@@ -286,6 +293,20 @@
     }
   }
 
+  // --- 広告エリアの休憩時強調表示制御 ---
+  function updateAdState(isBreak) {
+    if (!adContainer) return;
+    if (isBreak) {
+      adContainer.classList.add('break-active');
+      if (adHeaderLabel) adHeaderLabel.textContent = '// BREAK PROTOCOL // RECOMMENDED SPONSOR';
+      if (adHeaderSub) adHeaderSub.textContent = 'RELAX & DISCOVER';
+    } else {
+      adContainer.classList.remove('break-active');
+      if (adHeaderLabel) adHeaderLabel.textContent = '// SPONSORED TRANSMISSION';
+      if (adHeaderSub) adHeaderSub.textContent = 'SYSTEM SUPPORT FEED';
+    }
+  }
+
   // --- モード切替 ---
   function setMode(newMode, resetTimer = true) {
     mode = newMode;
@@ -296,6 +317,7 @@
       modeBreakBtn.classList.remove('active');
       modeCaption.textContent = 'PHASE: WORK FOCUS';
       totalDuration = workDuration;
+      updateAdState(false);
     } else {
       body.classList.remove('mode-work');
       body.classList.add('mode-break');
@@ -303,6 +325,7 @@
       modeBreakBtn.classList.add('active');
       modeCaption.textContent = 'PHASE: REST INTERVAL';
       totalDuration = breakDuration;
+      updateAdState(true);
     }
 
     if (resetTimer) {
@@ -392,24 +415,26 @@
       saveStoredData();
       updateDisplay();
       playWorkCompleteSound();
-      updateStatus('SESSION COMPLETE // VICTORY');
+      updateStatus('FOCUS COMPLETE // AUTO-INITIATING BREAK');
 
-      sendNotification('MISSION ACCOMPLISHED', 'Work session complete! Time to initiate rest protocol.');
+      sendNotification('MISSION ACCOMPLISHED', 'Work session complete! 5-minute break initiated.');
 
-      if (autoSwitch) {
-        setTimeout(() => {
-          setMode('break', true);
-          startTimer();
-        }, 1500);
-      } else {
-        setTimeout(() => {
-          setMode('break', true);
-        }, 2000);
-      }
+      // 広告エリアを休憩モードとして強調出現！
+      updateAdState(true);
+
+      // 1.2秒の完了ファンファーレ余韻後、自動的に5分休憩タイマーを開始
+      setTimeout(() => {
+        setMode('break', true);
+        startTimer();
+      }, 1200);
     } else {
+      // 休憩完了
       playBreakCompleteSound();
-      updateStatus('REST COMPLETE // STANDBY');
+      updateStatus('REST COMPLETE // READY FOR NEXT MISSION');
       sendNotification('SYSTEM RECHARGED', 'Break session ended. Ready to resume next focus mission?');
+
+      // 広告を通常表示に戻す
+      updateAdState(false);
 
       if (autoSwitch) {
         setTimeout(() => {
