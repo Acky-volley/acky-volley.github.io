@@ -555,14 +555,16 @@
   });
 
   // プライバシーモーダルイベント
-  privacyBtn.addEventListener('click', openPrivacyModal);
-  modalCloseBtn.addEventListener('click', closePrivacyModal);
-  modalConfirmBtn.addEventListener('click', closePrivacyModal);
-  privacyModal.addEventListener('click', (e) => {
-    if (e.target === privacyModal) {
-      closePrivacyModal();
-    }
-  });
+  if (privacyBtn) privacyBtn.addEventListener('click', openPrivacyModal);
+  if (modalCloseBtn) modalCloseBtn.addEventListener('click', closePrivacyModal);
+  if (modalConfirmBtn) modalConfirmBtn.addEventListener('click', closePrivacyModal);
+  if (privacyModal) {
+    privacyModal.addEventListener('click', (e) => {
+      if (e.target === privacyModal) {
+        closePrivacyModal();
+      }
+    });
+  }
 
   // キーボードショートカット
   window.addEventListener('keydown', (e) => {

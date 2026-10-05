@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>当サイトについて // CYBER_CHRONO</title>
+  
+  <!-- Google Fonts: Orbitron & Share Tech Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <!-- Google AdSense 審査・配信コード -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7377571622123574"
+       crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .page-container {
+      width: 100%;
+      max-width: 860px;
+      margin: 40px auto;
+      padding: 30px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-dim);
+      border-radius: 8px;
+      box-shadow: 0 0 25px rgba(0, 243, 255, 0.1);
+      user-select: text;
+    }
+    .page-header {
+      border-bottom: 1px solid var(--border-dim);
+      padding-bottom: 20px;
+      margin-bottom: 25px;
+    }
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--work-color);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .page-sub {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .about-content h2 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: var(--work-color);
+      margin-top: 30px;
+      margin-bottom: 12px;
+      border-left: 3px solid var(--work-color);
+      padding-left: 10px;
+    }
+    .about-content p {
+      line-height: 1.8;
+      color: #c8dbe6;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    .info-table th, .info-table td {
+      border: 1px solid var(--border-dim);
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    .info-table th {
+      background: rgba(0, 243, 255, 0.08);
+      color: var(--work-color);
+      width: 25%;
+    }
+    .info-table td {
+      color: #c8dbe6;
+    }
+    .back-nav {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-dim);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-link {
+      color: var(--work-color);
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s ease;
+    }
+    .nav-link:hover {
+      color: #ffffff;
+      text-shadow: 0 0 8px var(--work-glow);
+    }
+  </style>
+</head>
+<body class="mode-work">
+  <div class="bg-grid"></div>
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
+
+  <div class="app-wrapper">
+    <main class="page-container">
+      <header class="page-header">
+        <h1 class="page-title">// ABOUT THIS SYSTEM</h1>
+        <div class="page-sub">CYBER_CHRONO 開発背景・運営情報・お問い合わせ</div>
+      </header>
+
+      <article class="about-content">
+        <h2>1. CYBER_CHRONO とは</h2>
+        <p>
+          「CYBER_CHRONO（サイバー・クロノ）」は、認知心理学に基づく時間管理法「ポモドーロ・テクニック」を、SF・サイバーパンクの近未来インターフェースで直感的に実践できるWebアプリケーションです。
+        </p>
+        <p>
+          プログラミング、執筆、学習、クリエイティブワークなど、深い没入感（ディープ・フォーカス）を必要とするあらゆる場面で、作業者の集中力維持と適度な休息のリズムを支援します。
+        </p>
+
+        <h2>2. 主な設計思想と機能</h2>
+        <ul style="margin-left: 20px; margin-bottom: 20px; color: #c8dbe6; line-height: 1.8;">
+          <li><strong>サイバーHUDゲージ:</strong> 残り時間を円形メーターで視覚化し、時間の経過を直感的に把握。</li>
+          <li><strong>ターゲットミッション設定:</strong> 1つのセッションに1つのタスクを明示し、マルチタスクによる集中力低下を防止。</li>
+          <li><strong>Web Audio API による効果音:</strong> 外部音声ファイルへの依存を排除し、高速かつ軽量な動作を実現。</li>
+          <li><strong>完全クライアントサイド実行:</strong> アカウント作成不要、個人情報の送信なしで即座に利用可能。</li>
+        </ul>
+
+        <h2>3. サイト運営者情報</h2>
+        <table class="info-table">
+          <tr>
+            <th>サイト名</th>
+            <td>CYBER_CHRONO // TECHNO POMODORO TIMER</td>
+          </tr>
+          <tr>
+            <th>公開URL</th>
+            <td>https://acky-volley.github.io/</td>
+          </tr>
+          <tr>
+            <th>運営者・開発者</th>
+            <td>CYBER_CHRONO プロジェクトチーム</td>
+          </tr>
+          <tr>
+            <th>利用料金</th>
+            <td>完全無料（誰でも無登録で利用可能）</td>
+          </tr>
+          <tr>
+            <th>ソースコード</th>
+            <td>GitHub Pages にて静的ホスティング</td>
+          </tr>
+        </table>
+
+        <h2>4. お問い合わせ窓口</h2>
+        <p>
+          当サイトの機能に関するご要望、不具合の報告、その他お問い合わせは、GitHubリポジトリ（acky-volley/acky-volley.github.io）の Issue または管理窓口までご連絡ください。
+        </p>
+        <p>
+          利用者の皆様からのフィードバックを元に、継続的な機能改善と安定した動作環境の提供に努めてまいります。
+        </p>
+
+        <div class="back-nav">
+          <a href="index.html" class="nav-link">&lt;&lt; タイマーに戻る [TIMER TERMINAL]</a>
+          <a href="privacy.html" class="nav-link">プライバシーポリシー [PRIVACY] &gt;&gt;</a>
+        </div>
+      </article>
+    </main>
+  </div>
+</body>
+</html>

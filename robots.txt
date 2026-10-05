@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://acky-volley.github.io/sitemap.xml
