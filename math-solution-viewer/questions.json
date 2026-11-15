@@ -1,0 +1,41 @@
+[
+  {
+    "id": "sample-1",
+    "title": "定積分と区分求積法の応用",
+    "category": "数学III・C",
+    "difficulty": 3,
+    "tags": ["微積分", "極限", "区分求積法", "頻出"],
+    "problem": "次の極限値を求めよ。\n\n$$\\lim_{n \\to \\infty} \\sum_{k=1}^{n} \\frac{n}{n^2 + k^2}$$",
+    "hint": "式全体を $\\frac{1}{n} f\\left(\\frac{k}{n}\\right)$ の形に変形し、区分求積法の公式\n$$\\lim_{n \\to \\infty} \\frac{1}{n} \\sum_{k=1}^{n} f\\left(\\frac{k}{n}\\right) = \\int_{0}^{1} f(x) dx$$\nを利用することを考えましょう。",
+    "solution": "### 【解答】\n\n与えられた極限の一般項の分母・分子を $n^2$ で割ると、\n\n$$\\frac{n}{n^2 + k^2} = \\frac{1}{n} \\cdot \\frac{1}{1 + \\left(\\frac{k}{n}\\right)^2}$$\n\nと変形できる。\n\nよって、求める極限は次のように表される：\n\n$$\\lim_{n \\to \\infty} \\sum_{k=1}^{n} \\frac{n}{n^2 + k^2} = \\lim_{n \\to \\infty} \\frac{1}{n} \\sum_{k=1}^{n} \\frac{1}{1 + \\left(\\frac{k}{n}\\right)^2}$$\n\n区分求積法の公式より、この極限は定積分に帰着される：\n\n$$= \\int_{0}^{1} \\frac{1}{1 + x^2} dx$$\n\nここで、$x = \\tan \\theta$ と置換すると、\n$dx = \\frac{1}{\\cos^2 \\theta} d\\theta = (1 + \\tan^2 \\theta) d\\theta$\n\n積分区間は $x: 0 \\to 1$ のとき $\\theta: 0 \\to \\frac{\\pi}{4}$ となるので、\n\n$$\\int_{0}^{1} \\frac{1}{1 + x^2} dx = \\int_{0}^{\\frac{\\pi}{4}} 1 \\, d\\theta = \\left[ \\theta \\right]_{0}^{\\frac{\\pi}{4}} = \\frac{\\pi}{4}$$\n\n**答:** $\\displaystyle \\frac{\\pi}{4}$",
+    "alternative": "#### 【別解・ポイント】\n- $\\int \\frac{1}{1+x^2} dx = \\arctan(x) + C$ を既知として使ってよい場合、\n  $$[\\arctan(x)]_0^1 = \\arctan(1) - \\arctan(0) = \\frac{\\pi}{4} - 0 = \\frac{\\pi}{4}$$\n  と直ちに計算できます。\n- 分母が $n^2 + k^2$ の形を見たら、$n^2$ でくくって $\\frac{k}{n}$ の塊を作るのが定石です。",
+    "createdAt": "2026-11-14T09:00:00.000Z",
+    "updatedAt": "2026-11-14T09:00:00.000Z"
+  },
+  {
+    "id": "sample-2",
+    "title": "放物線と接線で囲まれる面積（1/12公式の証明と利用）",
+    "category": "数学II・B",
+    "difficulty": 2,
+    "tags": ["微分積分", "面積", "1/12公式"],
+    "problem": "放物線 $C: y = x^2$ と、その上の2点 $P(-1, 1)$, $Q(2, 4)$ における接線 $\\ell_1, \\ell_2$ を考える。\n\n1. 接線 $\\ell_1, \\ell_2$ の方程式およびその交点の座標を求めよ。\n2. 放物線 $C$ と2本の接線 $\\ell_1, \\ell_2$ で囲まれた図形の面積 $S$ を求めよ。",
+    "hint": "2本の接線の交点の $x$ 座標は、2つの接点の $x$ 座標の中点になります。\n面積の計算では、交点を境に積分区間を分けるか、$(x - \\alpha)^2$ の積分形を活用すると計算が格段に楽になります。",
+    "solution": "### 【解答】\n\n$y = x^2$ より $y' = 2x$ である。\n\n#### (1) 接線の方程式と交点\n- 点 $P(-1, 1)$ における接線 $\\ell_1$ の傾きは $2(-1) = -2$ より、\n  $$\\ell_1: y - 1 = -2(x + 1) \\implies y = -2x - 1$$\n- 点 $Q(2, 4)$ における接線 $\\ell_2$ の傾きは $2(2) = 4$ より、\n  $$\\ell_2: y - 4 = 4(x - 2) \\implies y = 4x - 4$$\n\n2本の接線の交点を求めるため連立すると：\n$$-2x - 1 = 4x - 4 \\implies 6x = 3 \\implies x = \\frac{1}{2}$$\n\n$y = 4\\left(\\frac{1}{2}\\right) - 4 = -2$\n\nよって、交点の座標は $\\displaystyle \\left( \\frac{1}{2}, -2 \\right)$ である。\n\n#### (2) 囲まれた面積 $S$\n交点の $x = \\frac{1}{2}$ で区間を分けて積分する：\n\n$$S = \\int_{-1}^{\\frac{1}{2}} \\{x^2 - (-2x - 1)\\} dx + \\int_{\\frac{1}{2}}^{2} \\{x^2 - (4x - 4)\\} dx$$\n\n被積分関数を完全平方式で表すと：\n$$x^2 + 2x + 1 = (x + 1)^2$$\n$$x^2 - 4x + 4 = (x - 2)^2$$\n\nよって、\n$$S = \\int_{-1}^{\\frac{1}{2}} (x + 1)^2 dx + \\int_{\\frac{1}{2}}^{2} (x - 2)^2 dx$$\n$$= \\left[ \\frac{(x+1)^3}{3} \\right]_{-1}^{\\frac{1}{2}} + \\left[ \\frac{(x-2)^3}{3} \\right]_{\\frac{1}{2}}^{2}$$\n$$= \\frac{1}{3} \\left( \\frac{3}{2} \\right)^3 - 0 + 0 - \\frac{1}{3} \\left( -\\frac{3}{2} \\right)^3$$\n$$= \\frac{1}{3} \\cdot \\frac{27}{8} + \\frac{1}{3} \\cdot \\frac{27}{8} = \\frac{9}{8} + \\frac{9}{8} = \\frac{9}{4}$$\n\n**答:** (1) $\\ell_1: y = -2x - 1$, $\\ell_2: y = 4x - 4$, 交点 $\\left(\\frac{1}{2}, -2\\right)$　(2) $S = \\displaystyle \\frac{9}{4}$",
+    "alternative": "#### 【公式による検算（1/12公式）】\n放物線 $y = ax^2 + \\dots$ とその上の2接線で囲まれる面積は、接点の $x$ 座標を $\\alpha, \\beta$ $(\\alpha < \\beta)$ とすると、\n$$S = \\frac{|a|}{12} (\\beta - \\alpha)^3$$\nが成り立ちます。\n本問では $a = 1, \\alpha = -1, \\beta = 2$ なので、\n$$S = \\frac{1}{12} (2 - (-1))^3 = \\frac{1}{12} \\cdot 3^3 = \\frac{27}{12} = \\frac{9}{4}$$\nとなり、解答と完全に一致します！記述式では公式の直接利用が認められない場合もあるため、途中式を丁寧に書く練習をしておきましょう。",
+    "createdAt": "2026-11-14T09:15:00.000Z",
+    "updatedAt": "2026-11-14T09:15:00.000Z"
+  },
+  {
+    "id": "sample-3",
+    "title": "2次正方行列の固有値と対角化",
+    "category": "線形代数",
+    "difficulty": 3,
+    "tags": ["線形代数", "固有値", "対角化", "大学数学"],
+    "problem": "次の行列 $A$ の固有値と固有ベクトルを求め、対角化可能である場合は対角化せよ。\n\n$$A = \\begin{pmatrix} 4 & 2 \\\\ 1 & 3 \\end{pmatrix}$$",
+    "hint": "固有方程式 $\\det(A - \\lambda I) = 0$ を解いて固有値 $\\lambda$ を求めます。その後、各固有値に対して $(A - \\lambda I)\\mathbf{v} = \\mathbf{0}$ を満たすゼロでないベクトル $\\mathbf{v}$ を求めます。",
+    "solution": "### 【解答】\n\n#### 1. 固有値の計算\n特性方程式 $\\det(A - \\lambda I) = 0$ を解く。\n\n$$\\det \\begin{pmatrix} 4 - \\lambda & 2 \\\\ 1 & 3 - \\lambda \\end{pmatrix} = 0$$\n$$(4 - \\lambda)(3 - \\lambda) - 2 = 0$$\n$$\\lambda^2 - 7\\lambda + 10 = 0$$\n$$(\\lambda - 2)(\\lambda - 5) = 0$$\n\nよって、固有値は $\\lambda = 2, 5$ である。\n\n#### 2. 固有ベクトルの計算\n\n**(i) $\\lambda = 2$ のとき**\n$$(A - 2I)\\mathbf{v} = \\begin{pmatrix} 2 & 2 \\\\ 1 & 1 \\end{pmatrix} \\begin{pmatrix} x \\\\ y \\end{pmatrix} = \\begin{pmatrix} 0 \\\\ 0 \\end{pmatrix}$$\n\nこれより $x + y = 0 \\implies y = -x$。したがって、固有ベクトルは（$c_1 \\neq 0$ として）：\n$$\\mathbf{v}_1 = c_1 \\begin{pmatrix} 1 \\\\ -1 \\end{pmatrix}$$\n\n**(ii) $\\lambda = 5$ のとき**\n$$(A - 5I)\\mathbf{v} = \\begin{pmatrix} -1 & 2 \\\\ 1 & -2 \\end{pmatrix} \\begin{pmatrix} x \\\\ y \\end{pmatrix} = \\begin{pmatrix} 0 \\\\ 0 \\end{pmatrix}$$\n\nこれより $x - 2y = 0 \\implies x = 2y$。したがって、固有ベクトルは（$c_2 \\neq 0$ として）：\n$$\\mathbf{v}_2 = c_2 \\begin{pmatrix} 2 \\\\ 1 \\end{pmatrix}$$\n\n#### 3. 対角化\n異なる固有値に対応する固有ベクトルは線形独立であるから、変換行列 $P$ を\n$$P = \\begin{pmatrix} 1 & 2 \\\\ -1 & 1 \\end{pmatrix}$$\nとおくと、$P$ は正則であり、\n\n$$P^{-1} A P = \\begin{pmatrix} 2 & 0 \\\\ 0 & 5 \\end{pmatrix}$$\n\nと対角化される。\n\n**答:** \n固有値: $\\lambda = 2, 5$\n固有ベクトル: $\\lambda=2$ に対して $\\begin{pmatrix} 1 \\\\ -1 \\end{pmatrix}$、$\\lambda=5$ に対して $\\begin{pmatrix} 2 \\\\ 1 \\end{pmatrix}$（定数倍を除く）\n対角化: $P = \\begin{pmatrix} 1 & 2 \\\\ -1 & 1 \\end{pmatrix}$ により $P^{-1}AP = \\begin{pmatrix} 2 & 0 \\\\ 0 & 5 \\end{pmatrix}$",
+    "alternative": "",
+    "createdAt": "2026-11-14T09:30:00.000Z",
+    "updatedAt": "2026-11-14T09:30:00.000Z"
+  }
+]

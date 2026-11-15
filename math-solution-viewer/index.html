@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathArchive - 数学問題・模範解答アーカイブ</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX (数式レンダリング) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  
+  <!-- Marked.js (Markdown変換) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@13.0.2/marked.min.js"></script>
+
+  <!-- Lucide Icons (SVGアイコン) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-light">
+  <!-- アプリケーションラッパー -->
+  <div id="app">
+    
+    <!-- ヘッダー -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo-area">
+          <div class="logo-icon">∑</div>
+          <div class="logo-text">
+            <span class="logo-title">MathArchive</span>
+            <span class="logo-subtitle">数学問題＆模範解答ノート</span>
+          </div>
+        </div>
+
+        <!-- 検索バー -->
+        <div class="search-box">
+          <i data-lucide="search" class="search-icon"></i>
+          <input type="text" id="global-search" placeholder="問題文、キーワード、タグで検索... ($...$ 数式も可)" autocomplete="off">
+          <button id="clear-search" class="clear-btn" title="検索をクリア" style="display: none;">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+
+        <!-- アクションボタン群 -->
+        <div class="header-actions">
+          <button id="btn-random" class="btn btn-secondary" title="ランダムに1問出題">
+            <i data-lucide="shuffle"></i>
+            <span class="btn-text">ランダム出題</span>
+          </button>
+          
+          <button id="btn-toggle-view" class="btn btn-primary" title="閲覧・管理の切り替え">
+            <i data-lucide="plus-circle" id="mode-icon"></i>
+            <span id="mode-text">問題を追加・管理</span>
+          </button>
+
+          <button id="btn-theme-toggle" class="btn btn-icon" title="ダークモード切り替え">
+            <i data-lucide="moon" id="theme-icon"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+      
+      <!-- ============================================== -->
+      <!-- VIEW MODE: 閲覧・学習モード                     -->
+      <!-- ============================================== -->
+      <section id="view-mode" class="app-section active">
+        <!-- コントロールバー / フィルター -->
+        <div class="control-panel">
+          <div class="filter-group">
+            <div class="filter-item">
+              <label for="filter-category"><i data-lucide="folder"></i> カテゴリ</label>
+              <select id="filter-category">
+                <option value="all">すべてのカテゴリ</option>
+              </select>
+            </div>
+            
+            <div class="filter-item">
+              <label for="filter-difficulty"><i data-lucide="star"></i> 難易度</label>
+              <select id="filter-difficulty">
+                <option value="all">すべて</option>
+                <option value="1">★☆☆☆☆ (基本)</option>
+                <option value="2">★★☆☆☆ (標準)</option>
+                <option value="3">★★★☆☆ (発展・入試標準)</option>
+                <option value="4">★★★★☆ (難関大レベル)</option>
+                <option value="5">★★★★★ (最難関・超難問)</option>
+              </select>
+            </div>
+
+            <div class="filter-item">
+              <label for="filter-status"><i data-lucide="check-circle-2"></i> 理解度</label>
+              <select id="filter-status">
+                <option value="all">すべてのステータス</option>
+                <option value="unlearned">未着手</option>
+                <option value="review">復習中 (△ / ✕)</option>
+                <option value="mastered">マスター済み (〇)</option>
+              </select>
+            </div>
+
+            <div class="filter-item">
+              <label for="sort-order"><i data-lucide="arrow-up-down"></i> 並び替え</label>
+              <select id="sort-order">
+                <option value="newest">新しい順</option>
+                <option value="oldest">古い順</option>
+                <option value="diff-desc">難易度が高い順</option>
+                <option value="diff-asc">難易度が低い順</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 統計バー -->
+          <div class="stats-bar">
+            <div class="stat-badge">全 <strong id="stat-total">0</strong> 問</div>
+            <div class="stat-badge stat-mastered">マスター: <strong id="stat-mastered">0</strong></div>
+            <div class="stat-badge stat-review">要復習: <strong id="stat-review">0</strong></div>
+            <div class="stat-badge stat-unlearned">未着手: <strong id="stat-unlearned">0</strong></div>
+          </div>
+        </div>
+
+        <!-- タグクラウド（選択可能） -->
+        <div id="tag-cloud-container" class="tag-cloud-container">
+          <span class="tag-cloud-label"><i data-lucide="tag"></i> タグ:</span>
+          <div id="tag-cloud" class="tag-cloud"></div>
+        </div>
+
+        <!-- 一覧ヘッダーバー -->
+        <div class="bulk-actions">
+          <div class="result-count" id="result-count">3問を表示中</div>
+          <div class="list-guide-text">
+            <i data-lucide="mouse-pointer-click"></i> 問題をクリックすると単問閲覧ページを開きます
+          </div>
+        </div>
+
+        <!-- 問題一覧表示コンテナ -->
+        <div id="questions-list" class="questions-index-grid">
+          <!-- JavaScriptで問題一覧カードを動的描画 -->
+        </div>
+
+        <!-- 0件ヒット時の表示 -->
+        <div id="empty-state" class="empty-state" style="display: none;">
+          <div class="empty-icon"><i data-lucide="inbox"></i></div>
+          <h3>該当する問題が見つかりませんでした</h3>
+          <p>検索条件やフィルターを変更するか、新しい問題を追加してみてください。</p>
+          <button id="btn-empty-add" class="btn btn-primary">
+            <i data-lucide="plus"></i> 新しい問題を追加
+          </button>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- DETAIL MODE: 単問閲覧・演習ページ               -->
+      <!-- ============================================== -->
+      <section id="detail-mode" class="app-section">
+        <!-- 上部ナビゲーションバー -->
+        <div class="detail-top-bar">
+          <button id="btn-back-to-list" class="btn btn-secondary">
+            <i data-lucide="arrow-left"></i> 問題一覧に戻る
+          </button>
+          <div class="detail-top-right">
+            <span id="detail-position-indicator" class="detail-pos-badge">1 / 3 問目</span>
+            <button id="btn-detail-random" class="btn btn-subtle" title="ランダムに別の問題へ移動">
+              <i data-lucide="shuffle"></i> ランダム次問
+            </button>
+            <button id="btn-detail-edit" class="btn btn-subtle" title="この問題を編集">
+              <i data-lucide="edit-2"></i> 編集
+            </button>
+          </div>
+        </div>
+
+        <!-- 単問メインコンテンツ描画先 -->
+        <div id="detail-question-container" class="detail-question-container">
+          <!-- JavaScriptで単問詳細を描画 -->
+        </div>
+
+        <!-- 下部 前後の問題ページ送りナビゲーション -->
+        <div class="detail-pager">
+          <button id="btn-prev-question" class="pager-btn prev">
+            <i data-lucide="chevron-left"></i>
+            <div class="pager-info">
+              <span class="pager-label">前の問題</span>
+              <span class="pager-title" id="prev-q-title">-</span>
+            </div>
+          </button>
+
+          <button id="btn-back-to-list-bottom" class="btn btn-secondary pager-center-btn">
+            <i data-lucide="layout-list"></i> 一覧へ戻る
+          </button>
+
+          <button id="btn-next-question" class="pager-btn next">
+            <div class="pager-info">
+              <span class="pager-label">次の問題</span>
+              <span class="pager-title" id="next-q-title">-</span>
+            </div>
+            <i data-lucide="chevron-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- ADMIN MODE: 問題作成・編集・データ管理モード   -->
+      <!-- ============================================== -->
+      <section id="admin-mode" class="app-section">
+        <div class="admin-container">
+          
+          <div class="admin-header-tabs">
+            <button class="admin-tab active" data-tab="editor">
+              <i data-lucide="edit-3"></i> <span id="form-tab-title">新しい問題を作成</span>
+            </button>
+            <button class="admin-tab" data-tab="manage-list">
+              <i data-lucide="list"></i> 登録問題の一覧・整理 (<span id="admin-list-count">0</span>)
+            </button>
+            <button class="admin-tab" data-tab="data-transfer">
+              <i data-lucide="database"></i> データ保存・GitHub公開用エクスポート
+            </button>
+          </div>
+
+          <!-- TAB 1: 作成・編集エディタ -->
+          <div id="tab-editor" class="tab-pane active">
+            <form id="question-form" class="question-form">
+              <input type="hidden" id="form-id" value="">
+
+              <!-- フォーム基本情報 -->
+              <div class="form-grid">
+                <div class="form-group span-2">
+                  <label for="form-title" class="required">タイトル / 問題名</label>
+                  <input type="text" id="form-title" placeholder="例: 定積分と区分求積法の応用" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="form-category">カテゴリ / 分野</label>
+                  <div class="input-with-datalist">
+                    <input type="text" id="form-category" list="category-datalist" placeholder="例: 数学III・C, 線形代数">
+                    <datalist id="category-datalist">
+                      <option value="数学I・A">
+                      <option value="数学II・B">
+                      <option value="数学III・C">
+                      <option value="線形代数">
+                      <option value="微分積分学">
+                      <option value="確率・統計">
+                      <option value="整数論">
+                    </datalist>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="form-difficulty">難易度</label>
+                  <select id="form-difficulty">
+                    <option value="1">★☆☆☆☆ (基本)</option>
+                    <option value="2">★★☆☆☆ (標準)</option>
+                    <option value="3" selected>★★★☆☆ (発展・入試標準)</option>
+                    <option value="4">★★★★☆ (難関大レベル)</option>
+                    <option value="5">★★★★★ (最難関・超難問)</option>
+                  </select>
+                </div>
+
+                <div class="form-group span-2">
+                  <label for="form-tags">タグ (カンマ区切り)</label>
+                  <input type="text" id="form-tags" placeholder="例: 極限, 区分求積法, 東大, 頻出">
+                </div>
+              </div>
+
+              <!-- 数式クイック挿入パレット -->
+              <div class="math-palette-card">
+                <div class="palette-header">
+                  <span class="palette-title"><i data-lucide="sparkles"></i> 数式クイック入力ツールバー (クリックでカーソル位置に挿入)</span>
+                </div>
+                <div class="palette-buttons">
+                  <button type="button" class="btn-math" data-insert="$\frac{a}{b}$" title="分数">$$\frac{a}{b}$$</button>
+                  <button type="button" class="btn-math" data-insert="$x^{2}$" title="上付き・べき乗">$$x^2$$</button>
+                  <button type="button" class="btn-math" data-insert="$a_{n}$" title="下付き">$$a_n$$</button>
+                  <button type="button" class="btn-math" data-insert="$\sqrt{x}$" title="平方根">$$\sqrt{x}$$</button>
+                  <button type="button" class="btn-math" data-insert="$\int_{a}^{b} f(x) \, dx$" title="定積分">$$\int_a^b$$</button>
+                  <button type="button" class="btn-math" data-insert="$\lim_{n \to \infty}$" title="極限">$$\lim$$</button>
+                  <button type="button" class="btn-math" data-insert="$\sum_{k=1}^{n}$" title="シグマ">$$\sum$$</button>
+                  <button type="button" class="btn-math" data-insert="$\begin{pmatrix} a & b \\ c & d \end{pmatrix}$" title="2x2行列">$$[\cdot]$$</button>
+                  <button type="button" class="btn-math" data-insert="\alpha" title="アルファ">$\alpha$</button>
+                  <button type="button" class="btn-math" data-insert="\beta" title="ベータ">$\beta$</button>
+                  <button type="button" class="btn-math" data-insert="\theta" title="シータ">$\theta$</button>
+                  <button type="button" class="btn-math" data-insert="\pi" title="パイ">$\pi$</button>
+                  <button type="button" class="btn-math" data-insert="\to" title="矢印">$\to$</button>
+                  <button type="button" class="btn-math" data-insert="\implies" title="ならば">$\implies$</button>
+                  <button type="button" class="btn-math" data-insert="\leqq" title="以下">$\leqq$</button>
+                  <button type="button" class="btn-math" data-insert="\geqq" title="以上">$\geqq$</button>
+                  <button type="button" class="btn-math" data-insert="\neq" title="等しくない">$\neq$</button>
+                  <button type="button" class="btn-math" data-insert="$$&#10;\begin{aligned}&#10;f(x) &= ... \\&#10;     &= ...&#10;\end{aligned}&#10;$$" title="複数行数式揃え (aligned)">$$\begin{aligned}= \end{aligned}$$</button>
+                </div>
+              </div>
+
+              <!-- 問題文 & リアルタイムプレビュー -->
+              <div class="editor-section">
+                <div class="section-label-bar">
+                  <label for="form-problem" class="required">
+                    <i data-lucide="help-circle"></i> 問題文 (Markdown & LaTeX対応)
+                  </label>
+                  <span class="hint-text">インライン数式は <code>$...$</code>、別行数式は <code>$$...$$</code></span>
+                </div>
+                <div class="split-editor">
+                  <div class="editor-pane">
+                    <textarea id="form-problem" rows="6" placeholder="問題文を入力してください...&#10;例: 次の極限値を求めよ。&#10;$$\lim_{n \to \infty} \sum_{k=1}^{n} \frac{n}{n^2 + k^2}$$" required></textarea>
+                  </div>
+                  <div class="preview-pane">
+                    <div class="preview-header"><i data-lucide="eye"></i> プレビュー</div>
+                    <div id="preview-problem" class="preview-content math-render-target"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ヒント (任意) -->
+              <div class="editor-section">
+                <div class="section-label-bar">
+                  <label for="form-hint">
+                    <i data-lucide="lightbulb"></i> ヒント・着眼点 (任意)
+                  </label>
+                </div>
+                <div class="split-editor">
+                  <div class="editor-pane">
+                    <textarea id="form-hint" rows="3" placeholder="解法のヒントや方針があれば入力してください（閲覧画面ではクリックで開きます）"></textarea>
+                  </div>
+                  <div class="preview-pane">
+                    <div class="preview-header"><i data-lucide="eye"></i> プレビュー</div>
+                    <div id="preview-hint" class="preview-content math-render-target"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 模範解答 (必須) -->
+              <div class="editor-section">
+                <div class="section-label-bar">
+                  <label for="form-solution" class="required">
+                    <i data-lucide="check-square"></i> 模範解答・詳しい途中式解説 (必須)
+                  </label>
+                </div>
+                <div class="split-editor">
+                  <div class="editor-pane">
+                    <textarea id="form-solution" rows="10" placeholder="丁寧な模範解答と解説を入力してください...&#10;### 【解答】&#10;式を変形すると...&#10;$$\int_0^1 \dots$$" required></textarea>
+                  </div>
+                  <div class="preview-pane">
+                    <div class="preview-header"><i data-lucide="eye"></i> プレビュー</div>
+                    <div id="preview-solution" class="preview-content math-render-target"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 別解・別アプローチ (任意) -->
+              <div class="editor-section">
+                <div class="section-label-bar">
+                  <label for="form-alternative">
+                    <i data-lucide="git-branch"></i> 別解・研究・裏技公式など (任意)
+                  </label>
+                </div>
+                <div class="split-editor">
+                  <div class="editor-pane">
+                    <textarea id="form-alternative" rows="4" placeholder="別解や別解法のポイントがあれば入力してください"></textarea>
+                  </div>
+                  <div class="preview-pane">
+                    <div class="preview-header"><i data-lucide="eye"></i> プレビュー</div>
+                    <div id="preview-alternative" class="preview-content math-render-target"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- フォーム送信アクション -->
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-lg" id="btn-save-question">
+                  <i data-lucide="check"></i> <span id="save-btn-text">保存して一覧に反映</span>
+                </button>
+                <button type="button" class="btn btn-secondary btn-lg" id="btn-cancel-edit">
+                  キャンセル
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- TAB 2: 登録問題の一覧・整理 -->
+          <div id="tab-manage-list" class="tab-pane">
+            <div class="manage-list-header">
+              <h3>登録済み問題の一覧</h3>
+              <p>問題を編集・複製・削除できます。順序の確認にも使えます。</p>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>タイトル</th>
+                    <th>カテゴリ</th>
+                    <th>難易度</th>
+                    <th>更新日時</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="manage-table-body">
+                  <!-- JavaScriptで描画 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 3: データ管理・GitHub公開用エクスポート -->
+          <div id="tab-data-transfer" class="tab-pane">
+            <!-- GitHub API 直接連携パネル -->
+            <div class="github-sync-panel">
+              <div class="sync-panel-header">
+                <div class="sync-title">
+                  <i data-lucide="github"></i>
+                  <div>
+                    <h4>GitHub リポジトリと直接紐づけ（自動クラウド同期）</h4>
+                    <p>お持ちのGitHubリポジトリを設定すると、Webフォームで問題を保存した瞬間にGitHub上の <code>questions.json</code> へ直接自動コミット（保存）されます。</p>
+                  </div>
+                </div>
+                <span id="github-sync-status" class="sync-status-badge">未設定</span>
+              </div>
+
+              <div class="sync-form-grid">
+                <div class="form-group">
+                  <label for="gh-repo">GitHub リポジトリ名 (ユーザー名/リポジトリ名)</label>
+                  <input type="text" id="gh-repo" placeholder="例: acky-volley/math-archive または acky-volley/acky-volley.github.io">
+                </div>
+                <div class="form-group">
+                  <label for="gh-branch">ブランチ名</label>
+                  <input type="text" id="gh-branch" value="main" placeholder="main">
+                </div>
+                <div class="form-group">
+                  <label for="gh-path">保存先ファイルパス</label>
+                  <input type="text" id="gh-path" value="questions.json" placeholder="例: questions.json または math/questions.json">
+                </div>
+                <div class="form-group">
+                  <label for="gh-token">Personal Access Token (repo または contents:write 権限)</label>
+                  <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx (このブラウザ内にのみ安全に保存されます)">
+                </div>
+              </div>
+
+              <div class="sync-options-bar">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="gh-auto-sync" checked>
+                  <span>問題を追加・編集・削除したときに自動でGitHubへ同期（Push）する</span>
+                </label>
+
+                <div class="sync-actions">
+                  <button type="button" id="btn-save-gh-config" class="btn btn-secondary">
+                    <i data-lucide="save"></i> 連携設定を保存
+                  </button>
+                  <button type="button" id="btn-pull-gh" class="btn btn-subtle" title="GitHub上の最新データを読み込みます">
+                    <i data-lucide="cloud-download"></i> GitHubから取得
+                  </button>
+                  <button type="button" id="btn-push-gh" class="btn btn-primary" title="現在の全問題をGitHubへ直接コミットします">
+                    <i data-lucide="cloud-upload"></i> 今すぐGitHubへ同期 (Push)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="data-transfer-cards">
+              
+              <!-- カード1: GitHub Pages公開用 -->
+              <div class="data-card featured-card">
+                <div class="data-card-icon"><i data-lucide="globe"></i></div>
+                <h4>🌐 手動で questions.json をダウンロード</h4>
+                <p>トークンを使わずに手動でGitHubにアップロードしたい場合は、こちらから最新の <code>questions.json</code> をダウンロードしてリポジトリに上書きしてください。</p>
+                <div class="data-card-actions">
+                  <button id="btn-export-github-json" class="btn btn-primary">
+                    <i data-lucide="download"></i> questions.json をダウンロード
+                  </button>
+                </div>
+              </div>
+
+              <!-- カード2: バックアップと復元 -->
+              <div class="data-card">
+                <div class="data-card-icon"><i data-lucide="archive"></i></div>
+                <h4>💾 データのバックアップ＆復元</h4>
+                <p>現在の全問題データ（理解度ステータス含む）をJSON形式でPCに保存したり、過去のバックアップから復元できます。</p>
+                <div class="data-card-actions">
+                  <button id="btn-backup-export" class="btn btn-secondary">
+                    <i data-lucide="download"></i> バックアップを保存
+                  </button>
+                  <label class="btn btn-secondary file-upload-label">
+                    <i data-lucide="upload"></i> バックアップを復元
+                    <input type="file" id="file-import-json" accept=".json" style="display: none;">
+                  </label>
+                </div>
+              </div>
+
+              <!-- カード3: リセット・サンプル復元 -->
+              <div class="data-card danger-card">
+                <div class="data-card-icon"><i data-lucide="refresh-cw"></i></div>
+                <h4>🔄 サンプルデータに戻す / 初期化</h4>
+                <p>初期の良問サンプル（数III、数IIB、線形代数）を再読み込みしたり、ブラウザのキャッシュを初期化します。</p>
+                <div class="data-card-actions">
+                  <button id="btn-reload-samples" class="btn btn-secondary">
+                    初期サンプルを読み込む
+                  </button>
+                  <button id="btn-reset-all" class="btn btn-danger">
+                    全データを初期化
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- モーダル: ランダム出題 (1問集中モード) -->
+    <div id="random-modal" class="modal">
+      <div class="modal-backdrop"></div>
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title"><i data-lucide="zap"></i> ランダム出題 - 今日の1問</div>
+          <button class="modal-close" id="btn-close-modal"><i data-lucide="x"></i></button>
+        </div>
+        <div class="modal-body" id="random-modal-content">
+          <!-- 選択された問題カードがここに表示される -->
+        </div>
+        <div class="modal-footer">
+          <button id="btn-next-random" class="btn btn-secondary">
+            <i data-lucide="shuffle"></i> 別の問題を引く
+          </button>
+          <button id="btn-close-modal-bottom" class="btn btn-primary">
+            閉じる
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- トースト通知 -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- フッター -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <p>© MathArchive - 数学学習と模範解答の個人アーカイブ</p>
+        <p class="footer-subtext">Powered by KaTeX & Marked.js | 完全サーバーレス・無料ホスティング対応</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
